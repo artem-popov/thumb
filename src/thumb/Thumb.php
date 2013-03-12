@@ -49,6 +49,9 @@ class Thumb {
       }
    }
 
+   /**
+    * @param string $originalFilePath The full path of the image we want to manipulate. It will comprise path on disk and name of the file itself.
+    */
    public function __construct($originalFilePath) {
       $this->originalFilePath = $originalFilePath;
       $bits = split("/", $originalFilePath);

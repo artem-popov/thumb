@@ -8,5 +8,5 @@ $jpg = new \thumb\Thumb("../fixtures/dog.jpg");
 $png = new \thumb\Thumb("../fixtures/dog.png");
 $gif = new \thumb\Thumb("../fixtures/dog.gif");
 $jpg->create($width, __DIR__ . "/../fixtures/results");
-// $png->create($width, __DIR__ . "/../fixtures/results");
+$png->create($width, __DIR__ . "/../fixtures/results"); // TODO this is failing at the mo
 $gif->create($width, __DIR__ . "/../fixtures/results");

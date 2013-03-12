@@ -1,0 +1,21 @@
+{
+   "name": "nourdine/thumb",
+   "type": "library",
+   "description": "A lib to transform images into thumbs",
+   "keywords": ["thumbs", "gd"],
+   "license": "GNU GPL v3",
+   "authors": [
+   {
+      "name": "fabs aka (nourdine)",
+      "email": "ftestolin@gmail.com"
+   }
+   ],
+   "require": {
+      "php": ">=5.3"
+   },
+   "autoload": {
+      "psr-0": {
+         "thumb": "src/"
+      }
+   }
+}
