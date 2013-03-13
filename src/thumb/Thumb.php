@@ -2,6 +2,8 @@
 
 namespace thumb;
 
+use \RuntimeException;
+
 class Thumb {
 
    protected $originalFileName = null;
@@ -18,7 +20,7 @@ class Thumb {
       }
    }
 
-   function createImage($filePath, $fileName) {
+   protected function createImage($filePath, $fileName) {
       $extension = $this->extractExtension($fileName);
       switch ($extension) {
          case "jpg":
@@ -50,10 +52,14 @@ class Thumb {
    }
 
    /**
-    * @param string $originalFilePath The full path of the image we want to manipulate. It will comprise path on disk and name of the file itself.
+    * @param string $originalFilePath The full path of the image we want to manipulate. It will comprise path on disk + the name of the file itself.
+    * @throws RuntimeException
     */
    public function __construct($originalFilePath) {
       $this->originalFilePath = $originalFilePath;
+      if (!file_exists($this->originalFilePath)) {
+         throw new RuntimeException("The file " . $this->originalFilePath . " does not exist");
+      }
       $bits = split("/", $originalFilePath);
       $this->fileNameOnly = $bits[count($bits) - 1];
    }
