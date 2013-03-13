@@ -64,8 +64,11 @@ class Thumb {
       $this->fileNameOnly = $bits[count($bits) - 1];
    }
 
-   public function create($newWidth, $destinationFolder) {
-      $src = $this->createImage($this->originalFilePath, $this->fileNameOnly);
+   public function create($newWidth, $destinationFolder, $fileName = null) {
+      if ($fileName == null) {
+         $fileName = $this->fileNameOnly;
+      }
+      $src = $this->createImage($this->originalFilePath, $fileName);
       list($width, $height) = getimagesize($this->originalFilePath);
       $newHeight = ($height / $width) * $newWidth;
       $tmp = imagecreatetruecolor($newWidth, $newHeight);
