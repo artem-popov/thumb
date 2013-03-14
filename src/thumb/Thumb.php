@@ -76,7 +76,7 @@ class Thumb {
    }
 
    /**
-    * @param string $originalFilePath The full path of the image we want to manipulate. It will comprise path on disk + the name of the file itself.
+    * @param string $originalFilePath The full path of the image we want to manipulate (it will comprise path on disk + the name of the file itself)
     * @throws RuntimeException
     */
    public function __construct($originalFilePath) {
@@ -88,6 +88,14 @@ class Thumb {
       $this->fileNameOnly = $bits[count($bits) - 1];
    }
 
+   /**
+    * Create the thumb file on disk.
+    * 
+    * @param integer $newDimension The new dimensions, either width or height
+    * @param string $destinationFolder The path of the folder where the thumb will be put
+    * @param string $fileName The name of the thumb file
+    * @param integer $strategy Whether to resize considering $newDimension as the width or the height of the thumb
+    */
    public function create($newDimension, $destinationFolder, $fileName = null, $strategy = self::WIDTH) {
       if ($fileName == null) {
          $fileName = $this->fileNameOnly;
