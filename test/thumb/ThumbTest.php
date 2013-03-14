@@ -4,25 +4,6 @@ use \thumb\Thumb;
 
 class ThumbTest extends PHPUnit_Framework_TestCase {
 
-   protected function emptyDir($dir, $deleteMe = false) {
-      if (!$dh = @opendir($dir)) {
-         return;
-      } else {
-         while (false !== ($obj = readdir($dh))) {
-            if ($obj == '.' || $obj == '..' || $obj == 'README') {
-               continue;
-            }
-            if (!unlink($dir . '/' . $obj)) {
-               $this->emptyDir($dir . '/' . $obj, true);
-            }
-         }
-         closedir($dh);
-         if ($deleteMe) {
-            rmdir($dir);
-         }
-      }
-   }
-
    protected function resize($fileName, $strategy) {
       $thumbFullPath = __DIR__ . "/../../fixtures/results/" . $fileName;
       $img = new Thumb(__DIR__ . "/../../fixtures/origin/" . $fileName);
@@ -46,7 +27,7 @@ class ThumbTest extends PHPUnit_Framework_TestCase {
    }
 
    public function tearDown() {
-      $this->emptyDir(__DIR__ . "/../../fixtures/results/");
+      emptyDir(__DIR__ . "/../../fixtures/results/");
    }
 
    public function testResizingJPG_Width() {
