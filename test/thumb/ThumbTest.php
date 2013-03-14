@@ -5,12 +5,11 @@ use \thumb\Thumb;
 class ThumbTest extends PHPUnit_Framework_TestCase {
 
    protected function emptyDir($dir, $deleteMe = false) {
-
       if (!$dh = @opendir($dir)) {
          return;
       } else {
          while (false !== ($obj = readdir($dh))) {
-            if ($obj == '.' || $obj == '..') {
+            if ($obj == '.' || $obj == '..' || $obj == 'README') {
                continue;
             }
             if (!unlink($dir . '/' . $obj)) {
@@ -24,13 +23,22 @@ class ThumbTest extends PHPUnit_Framework_TestCase {
       }
    }
 
-   protected function resize($fileName) {
-      $thumbLocation = __DIR__ . "/../../fixtures/results/" . $fileName;
-      $jpg = new Thumb(__DIR__ . "/../../fixtures/origin/" . $fileName);
-      $jpg->create(100, __DIR__ . "/../../fixtures/results/");
-      $this->assertTrue(file_exists($thumbLocation));
-      $data = getimagesize($thumbLocation);
-      $this->assertEquals(100, $data[0]);
+   protected function resize($fileName, $strategy) {
+      $thumbFullPath = __DIR__ . "/../../fixtures/results/" . $fileName;
+      $img = new Thumb(__DIR__ . "/../../fixtures/origin/" . $fileName);
+      $img->create(100, __DIR__ . "/../../fixtures/results/", null, $strategy);
+      $this->assertTrue(file_exists($thumbFullPath));
+      $data = getimagesize($thumbFullPath);
+      $this->assertEquals(100, $data[$strategy - 1]);
+   }
+
+   protected function resizeAndRenaming($fileName, $thumbName, $strategy) {
+      $thumbFullPath = __DIR__ . "/../../fixtures/results/" . $thumbName;
+      $img = new Thumb(__DIR__ . "/../../fixtures/origin/" . $fileName);
+      $img->create(100, __DIR__ . "/../../fixtures/results/", $thumbName, $strategy);
+      $this->assertTrue(file_exists($thumbFullPath));
+      $data = getimagesize($thumbFullPath);
+      $this->assertEquals(100, $data[$strategy - 1]);
    }
 
    public function setUp() {
@@ -41,15 +49,51 @@ class ThumbTest extends PHPUnit_Framework_TestCase {
       $this->emptyDir(__DIR__ . "/../../fixtures/results/");
    }
 
-   public function testResizingJPG() {
-      $this->resize("dog.jpg");
+   public function testResizingJPG_Width() {
+      $this->resize("dog.jpg", Thumb::WIDTH);
    }
 
-   public function testResizingGIF() {
-      $this->resize("dog.gif");
+   public function testResizingGIF_Width() {
+      $this->resize("dog.gif", Thumb::WIDTH);
    }
 
-   public function testResizingPNG() {
-      $this->resize("dog.png");
+   public function testResizingPNG_Width() {
+      $this->resize("dog.png", Thumb::WIDTH);
+   }
+
+   public function testResizingJPG_Height() {
+      $this->resize("dog.jpg", Thumb::HEIGHT);
+   }
+
+   public function testResizingGIF_Height() {
+      $this->resize("dog.gif", Thumb::HEIGHT);
+   }
+
+   public function testResizingPNG_Height() {
+      $this->resize("dog.png", Thumb::HEIGHT);
+   }
+
+   public function testResizingAndRenamingJPG_Width() {
+      $this->resizeAndRenaming("dog.jpg", "thumb.jpg", Thumb::WIDTH);
+   }
+
+   public function testResizingAndRenamingGIF_Width() {
+      $this->resizeAndRenaming("dog.gif", "thumb.gif", Thumb::WIDTH);
+   }
+
+   public function testResizingAndRenamingPNG_Width() {
+      $this->resizeAndRenaming("dog.png", "thumb.png", Thumb::WIDTH);
+   }
+
+   public function testResizingAndRenamingJPG_Height() {
+      $this->resizeAndRenaming("dog.jpg", "thumb.jpg", Thumb::HEIGHT);
+   }
+
+   public function testResizingAndRenamingGIF_Height() {
+      $this->resizeAndRenaming("dog.gif", "thumb.gif", Thumb::HEIGHT);
+   }
+
+   public function testResizingAndRenamingPNG_Height() {
+      $this->resizeAndRenaming("dog.png", "thumb.png", Thumb::HEIGHT);
    }
 }

@@ -6,8 +6,32 @@ use \RuntimeException;
 
 class Thumb {
 
+   const WIDTH = 1;
+   const HEIGHT = 2;
+
    protected $originalFileName = null;
    protected $fileNameOnly = null;
+
+   protected function getNewDimensions($strategy, $newDimension) {
+      list($width, $height) = getimagesize($this->originalFilePath);
+      if ($strategy === self::WIDTH) {
+         return array(
+            "originalWidth" => $width,
+            "originalHeight" => $height,
+            "newWidth" => $newDimension,
+            "newHeight" => ($height / $width) * $newDimension
+         );
+      } else if (self::HEIGHT) {
+         return array(
+            "originalWidth" => $width,
+            "originalHeight" => $height,
+            "newWidth" => ($width / $height) * $newDimension,
+            "newHeight" => $newDimension
+         );
+      } else {
+         throw new RuntimeException("Non-existing resizing strategy :(");
+      }
+   }
 
    protected function extractExtension($fileName) {
       $bits = explode(".", $fileName);
@@ -64,17 +88,16 @@ class Thumb {
       $this->fileNameOnly = $bits[count($bits) - 1];
    }
 
-   public function create($newWidth, $destinationFolder, $fileName = null) {
+   public function create($newDimension, $destinationFolder, $fileName = null, $strategy = self::WIDTH) {
       if ($fileName == null) {
          $fileName = $this->fileNameOnly;
       }
       $src = $this->createImage($this->originalFilePath, $fileName);
-      list($width, $height) = getimagesize($this->originalFilePath);
-      $newHeight = ($height / $width) * $newWidth;
-      $tmp = imagecreatetruecolor($newWidth, $newHeight);
+      $dimensions = $this->getNewDimensions($strategy, $newDimension);
+      $tmp = imagecreatetruecolor($dimensions["newWidth"], $dimensions["newHeight"]);
       // this does the image resizing by copying the original image into the $tmp image!
-      imagecopyresampled($tmp, $src, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
-      $this->saveImage($tmp, $destinationFolder, $this->fileNameOnly);
+      imagecopyresampled($tmp, $src, 0, 0, 0, 0, $dimensions["newWidth"], $dimensions["newWidth"], $dimensions["originalWidth"], $dimensions["originalHeight"]);
+      $this->saveImage($tmp, $destinationFolder, $fileName);
       $this->freeMemory(array($src, $tmp));
    }
 }
