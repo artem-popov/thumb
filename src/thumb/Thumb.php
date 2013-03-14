@@ -12,6 +12,17 @@ class Thumb {
    protected $originalFileName = null;
    protected $fileNameOnly = null;
 
+   protected function extractExtension($fileName) {
+      $bits = explode(".", $fileName);
+      return strtolower($bits[count($bits) - 1]);
+   }
+
+   protected function freeMemory(array $files) {
+      foreach ($files as $file) {
+         imagedestroy($file);
+      }
+   }
+
    protected function getNewDimensions($strategy, $newDimension) {
       list($width, $height) = getimagesize($this->originalFilePath);
       if ($strategy === self::WIDTH) {
@@ -30,17 +41,6 @@ class Thumb {
          );
       } else {
          throw new RuntimeException("Non-existing resizing strategy :(");
-      }
-   }
-
-   protected function extractExtension($fileName) {
-      $bits = explode(".", $fileName);
-      return strtolower($bits[count($bits) - 1]);
-   }
-
-   protected function freeMemory(array $files) {
-      foreach ($files as $file) {
-         imagedestroy($file);
       }
    }
 
@@ -84,7 +84,7 @@ class Thumb {
       if (!file_exists($this->originalFilePath)) {
          throw new RuntimeException("The file " . $this->originalFilePath . " does not exist");
       }
-      $bits = split("/", $originalFilePath);
+      $bits = split("/", $this->originalFilePath);
       $this->fileNameOnly = $bits[count($bits) - 1];
    }
 
@@ -104,7 +104,7 @@ class Thumb {
       $dimensions = $this->getNewDimensions($strategy, $newDimension);
       $tmp = imagecreatetruecolor($dimensions["newWidth"], $dimensions["newHeight"]);
       // this does the image resizing by copying the original image into the $tmp image!
-      imagecopyresampled($tmp, $src, 0, 0, 0, 0, $dimensions["newWidth"], $dimensions["newWidth"], $dimensions["originalWidth"], $dimensions["originalHeight"]);
+      imagecopyresampled($tmp, $src, 0, 0, 0, 0, $dimensions["newWidth"], $dimensions["newHeight"], $dimensions["originalWidth"], $dimensions["originalHeight"]);
       $this->saveImage($tmp, $destinationFolder, $fileName);
       $this->freeMemory(array($src, $tmp));
    }
