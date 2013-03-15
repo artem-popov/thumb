@@ -29,6 +29,12 @@ $img->create(300, "thumbsFolder", "thumbName.jpg", Thumb::WIDTH);
  * with a height of 300 and a proportional width.
  */
 $img->create(300, "thumbsFolder", "thumbName.jpg", Thumb::HEIGHT);
+
+/** 
+ * The following will create thumbsFolder/image.jpg
+ * with a height of 300 and a proportional width.
+ */
+$img->create(300, "thumbsFolder", null, Thumb::HEIGHT);
 ``` 
 
 ### 2. Image types
