@@ -84,7 +84,7 @@ class Thumb {
       if (!file_exists($this->originalFilePath)) {
          throw new RuntimeException("The file " . $this->originalFilePath . " does not exist");
       }
-      $bits = split("/", $this->originalFilePath);
+      $bits = explode("/", $this->originalFilePath);
       $this->fileNameOnly = $bits[count($bits) - 1];
    }
 
