@@ -70,7 +70,7 @@ class Thumb {
             imagegif($img, $destination);
             break;
          case "png":
-            imagepng($img, $destination, 100);
+            imagepng($img, $destination, 9);
             break;
       }
    }
