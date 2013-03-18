@@ -21,7 +21,7 @@ class ThumbTest extends PHPUnit_Framework_TestCase {
    }
 
    public function setUp() {
-
+      
    }
 
    public function tearDown() {
@@ -31,8 +31,15 @@ class ThumbTest extends PHPUnit_Framework_TestCase {
    /**
     * @expectedException \RuntimeException
     */
-   public function testInstantiation() {
+   public function testInstantiationNonExistingFile() {
       new Thumb("no-way.jpg");
+   }
+
+   /**
+    * @expectedException \RuntimeException
+    */
+   public function testInstantiationNotSupportedFileType() {
+      new Thumb(__DIR__ . "/../../fixtures/origin/dog.tiff");
    }
 
    public function testThumbNameKeepsTheCase() {

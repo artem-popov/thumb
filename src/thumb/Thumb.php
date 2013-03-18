@@ -13,8 +13,14 @@ class Thumb {
    protected $fileNameOnly = null;
 
    protected function extractExtension($fileName) {
-      $bits = explode(".", $fileName);
-      return strtolower($bits[count($bits) - 1]);
+      $pathBits = explode(DIRECTORY_SEPARATOR, $fileName);
+      $fileName = $pathBits[count($pathBits) - 1];
+      $fileNameBits = explode(".", $fileName);
+      return strtolower($fileNameBits[count($fileNameBits) - 1]);
+   }
+
+   protected function isAllowedFileExtension($extension) {
+      return in_array($extension, array("jpg", "gif", "png"));
    }
 
    protected function freeMemory(array $files) {
@@ -45,8 +51,7 @@ class Thumb {
    }
 
    protected function createImage($filePath, $fileName) {
-      $extension = $this->extractExtension($fileName);
-      switch ($extension) {
+      switch ($this->originalFileExtension) {
          case "jpg":
             return imagecreatefromjpeg($filePath);
             break;
@@ -60,9 +65,8 @@ class Thumb {
    }
 
    protected function saveImage($img, $folder, $fileName) {
-      $extension = $this->extractExtension($fileName);
       $destination = $folder . "/" . $fileName;
-      switch ($extension) {
+      switch ($this->originalFileExtension) {
          case "jpg":
             imagejpeg($img, $destination, 100);
             break;
@@ -81,8 +85,12 @@ class Thumb {
     */
    public function __construct($originalFilePath) {
       $this->originalFilePath = $originalFilePath;
+      $this->originalFileExtension = $this->extractExtension($originalFilePath);
       if (!file_exists($this->originalFilePath)) {
-         throw new RuntimeException("The file " . $this->originalFilePath . " does not exist");
+         throw new RuntimeException("The file " . $this->originalFilePath . " does not exist!");
+      }
+      if ($this->isAllowedFileExtension($this->originalFileExtension) === false) {
+         throw new RuntimeException("This type of image [" . $this->originalFileExtension . "] is not supported!");
       }
       $bits = explode("/", $this->originalFilePath);
       $this->fileNameOnly = $bits[count($bits) - 1];
@@ -97,7 +105,7 @@ class Thumb {
     * @param integer $strategy Whether to resize considering $newDimension as the width or the height of the thumb
     */
    public function create($newDimension, $destinationFolder, $fileName = null, $strategy = self::WIDTH) {
-      if ($fileName == null) {
+      if ($fileName === null) {
          $fileName = $this->fileNameOnly;
       }
       $src = $this->createImage($this->originalFilePath, $fileName);
