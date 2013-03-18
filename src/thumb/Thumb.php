@@ -20,7 +20,7 @@ class Thumb {
    }
 
    protected function isAllowedFileExtension($extension) {
-      return in_array($extension, array("jpg", "gif", "png"));
+      return in_array($extension, array("jpg", "jpeg", "gif", "png"));
    }
 
    protected function freeMemory(array $files) {
