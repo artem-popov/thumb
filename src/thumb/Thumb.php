@@ -55,6 +55,9 @@ class Thumb {
          case "jpg":
             return imagecreatefromjpeg($filePath);
             break;
+         case "jpeg":
+            return imagecreatefromjpeg($filePath);
+            break;
          case "gif":
             return imagecreatefromgif($filePath);
             break;
@@ -68,6 +71,9 @@ class Thumb {
       $destination = $folder . "/" . $fileName;
       switch ($this->originalFileExtension) {
          case "jpg":
+            imagejpeg($img, $destination, 100);
+            break;
+         case "jpeg":
             imagejpeg($img, $destination, 100);
             break;
          case "gif":
