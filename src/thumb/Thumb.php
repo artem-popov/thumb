@@ -68,9 +68,12 @@ class Thumb {
       }
    }
 
-   protected function saveImage($img, $folder, $fileName, $quality) {
+   protected function saveImage( $img, $folder, $fileName, $quality, $imageType = null ) {
       $destination = $folder . "/" . $fileName;
-      switch ($this->originalFileExtension) {
+
+	  $imageType = ( null == $imageType ) ? $this->originalFileExtension : $imageType;
+
+      switch ( $imageType ) {
          case "jpg":
             imagejpeg($img, $destination, $quality);
             break;
@@ -111,7 +114,7 @@ class Thumb {
     * @param string $fileName The name of the thumb file
     * @param integer $strategy Whether to resize considering $newDimension as the width or the height of the thumb
     */
-   public function create($newDimension, $destinationFolder, $fileName = null, $strategy = self::WIDTH, $quality = self::QUALITY) {
+   public function create($newDimension, $destinationFolder, $fileName = null, $strategy = self::WIDTH, $quality = self::QUALITY, $imageType = null) {
       if ($fileName === null) {
          $fileName = $this->fileNameOnly;
       }
@@ -120,7 +123,7 @@ class Thumb {
       $tmp = imagecreatetruecolor($dimensions["newWidth"], $dimensions["newHeight"]);
       // this does the image resizing by copying the original image into the $tmp image!
       imagecopyresampled($tmp, $src, 0, 0, 0, 0, $dimensions["newWidth"], $dimensions["newHeight"], $dimensions["originalWidth"], $dimensions["originalHeight"]);
-      $this->saveImage($tmp, $destinationFolder, $fileName, $quality);
+      $this->saveImage($tmp, $destinationFolder, $fileName, $quality, $imageType);
       $this->freeMemory(array($src, $tmp));
    }
 }
